@@ -1,24 +1,28 @@
-
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 import string
 
-# تحميل آمن لموارد NLTK المطلوبة
-resources = ['punkt', 'stopwords', 'wordnet']
-for res in resources:
-    try:
-        nltk.data.find(f'tokenizers/{res}' if res == 'punkt' else f'corpora/{res}')
-    except LookupError:
-        nltk.download(res)
+# تحميل موارد NLTK بشكل متوافق مع Streamlit Cloud
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt', download_dir='/tmp')
+    nltk.data.path.append('/tmp')
 
-# تهيئة الأدوات
+for resource in ['stopwords', 'wordnet']:
+    try:
+        nltk.data.find(f'corpora/{resource}')
+    except LookupError:
+        nltk.download(resource, download_dir='/tmp')
+        nltk.data.path.append('/tmp')
+
+# التهيئة
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
 stemmer = PorterStemmer()
 
-# دالة المعالجة المسبقة
 def preprocess_text(text):
     text = text.lower()
     tokens = word_tokenize(text)
