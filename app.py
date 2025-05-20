@@ -1,3 +1,26 @@
+import nltk
+import os
+
+# نحدد مسار مؤقت لتحميل ملفات NLTK
+nltk_data_path = '/tmp'
+
+# نضيف المسار لمسارات البحث لو مش موجود
+if nltk_data_path not in nltk.data.path:
+    nltk.data.path.insert(0, nltk_data_path)
+
+# نحاول نحمّل الموارد الأساسية لو مش موجودة
+def safe_download(resource, path):
+    try:
+        nltk.data.find(path)
+    except LookupError:
+        nltk.download(resource, download_dir=nltk_data_path)
+
+safe_download('punkt', 'tokenizers/punkt')
+safe_download('stopwords', 'corpora/stopwords')
+safe_download('wordnet', 'corpora/wordnet')
+
+
+
 import streamlit as st
 import pandas as pd
 import os
